@@ -517,8 +517,8 @@ contract("StaircaseBondingCurve", (accounts) => {
   });
 
   it("should mint 1k paying in native token", async () => {
-    const amount = toWei("1 000");
-    const cost = toWei("10");
+    const amount = toWei("10");
+    const cost = toWei("0.1");
 
     const buyerDai0 = web3.utils.toBN(await web3.eth.getBalance(buyer));
     const execDAODai0 = web3.utils.toBN(await web3.eth.getBalance(execDAO));
@@ -527,7 +527,7 @@ contract("StaircaseBondingCurve", (accounts) => {
 
     const result = await tokenTemp4.mint(buyer, amount, {
       from: buyer,
-      value: toWei("10").toString(),
+      value: cost.toString(),
     });
 
     const gasUsed = web3.utils.toBN(result.receipt.gasUsed);
