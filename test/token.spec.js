@@ -203,7 +203,10 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(buyerCredits0.toString(), "0", "credits");
     assert.equal(supply0.toString(), initSupply.toString(), "supply");
 
-    await tokenTemp.mint(buyer, amount, { from: buyer });
+    const result = await tokenTemp.mint(buyer, amount, { from: buyer });
+
+    const gasUsed = web3.utils.toBN(result.receipt.gasUsed);
+    console.log(`gasUsed: ${gasUsed.toString()}`);
 
     const buyerDai1 = await dai.balanceOf(buyer);
     const execDAODai1 = await dai.balanceOf(execDAO);
@@ -439,7 +442,10 @@ contract("StaircaseBondingCurve", (accounts) => {
     const buyerCredits0 = await tokenTemp2.balanceOf(buyer);
     const supply0 = await tokenTemp2.totalSupply();
 
-    await tokenTemp2.mint(buyer, amount, { from: buyer });
+    const result = await tokenTemp2.mint(buyer, amount, { from: buyer });
+
+    const gasUsed = web3.utils.toBN(result.receipt.gasUsed);
+    console.log(`gasUsed: ${gasUsed.toString()}`);
 
     const buyerDai1 = await dai.balanceOf(buyer);
     const execDAODai1 = await dai.balanceOf(execDAO);
@@ -531,6 +537,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     });
 
     const gasUsed = web3.utils.toBN(result.receipt.gasUsed);
+    console.log(`gasUsed: ${gasUsed.toString()}`);
     const gasPrice = web3.utils.toBN(
       (await web3.eth.getTransaction(result.tx)).gasPrice
     );
