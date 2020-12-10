@@ -16,16 +16,16 @@ contract StaircaseBondingCurve is ERC20 {
 
     uint256 public initSupply;
     uint8 public step = 0;
-    address public beneficiary;
+    address payable public beneficiary;
 
-    IERC20 baseToken;
+    IERC20 public baseToken;
 
     constructor(
         IERC20 _baseToken, 
         uint256[] memory _steps, 
         uint256[] memory _pricesM, 
         uint256 _initSupply, 
-        address _beneficiary) 
+        address payable _beneficiary) 
         ERC20("_Prtcl Native Token", "UPR") public {
 
         baseToken = _baseToken;
@@ -93,10 +93,16 @@ contract StaircaseBondingCurve is ERC20 {
 
     /** Mints amount tokens to address "account" by transferring the an amount of baseTokens 
         defined by the price() function to the beneficiary */
-    function mint(address account, uint256 amount) public {
+    function mint(address account, uint256 amount) public payable {
         (uint256 cost, uint8 newStep) = mintCost(amount);
         step = newStep;
-        baseToken.transferFrom(msg.sender, beneficiary, cost);
+
+        if (address(baseToken) != address(0)) {
+            baseToken.transferFrom(msg.sender, beneficiary, cost);
+        } else {
+            require(msg.value >= cost, "funds sent not enough");
+            beneficiary.transfer(msg.value);
+        }
 
         _mint(account, amount);
     }
