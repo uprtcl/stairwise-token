@@ -6,8 +6,8 @@ const { toWei, numOf } = require("./../test/general.support");
 module.exports = function (deployer, _, accounts) {
   deployer.then(async () => {
     const god = accounts[0];
-    const execDAO = accounts[2];
 
+    let execDAO;
     let dai;
 
     if (process.env.deploying !== "true") {
@@ -15,8 +15,10 @@ module.exports = function (deployer, _, accounts) {
       console.log("------------------");
       console.log("DEPLOYING FOR TEST");
       dai = await deployer.deploy(ERC20Mintable1, { from: god });
+      execDAO = accounts[2];
     } else {
       dai = { address: process.env.daiAddress };
+      execDAO = process.env.execDAOPotAddress;
 
       console.log("------------------");
       console.log("------------------");

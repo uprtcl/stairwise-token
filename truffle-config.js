@@ -24,6 +24,16 @@ module.exports = {
       gasPrice: 25000000000,
       network_id: 4,
     },
+    xdai: {
+      provider: () => {
+        return new HDWalletProvider(
+          process.env.mnemonic,
+          process.env.xdaiEndpoint
+        );
+      },
+      gasPrice: 25000000000,
+      network_id: 100,
+    },
     mainnet: {
       provider: () => {
         return new HDWalletProvider(
@@ -42,7 +52,8 @@ module.exports = {
       version: "^0.6.0",
       settings: {
         optimizer: {
-          enabled: false,
+          enabled: true,
+          runs: 200,
         },
       },
     },
