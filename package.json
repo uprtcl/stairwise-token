@@ -3,7 +3,7 @@
   "scripts": {
     "test": "truffle test",
     "migrate": "truffle migrate",
-    "migrate-rinkeby": "truffle migrate --network rinkeby"
+    "minify": "node ./json.clean.js ./build/contracts"
   },
   "dependencies": {
     "dotenv": "^8.0.0",
