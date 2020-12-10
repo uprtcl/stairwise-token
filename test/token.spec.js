@@ -32,12 +32,12 @@ contract("StaircaseBondingCurve", (accounts) => {
 
   const initSupply = toWei("1 000 000");
 
-  xit("should get contract instances", async () => {
+  it("should get contract instances", async () => {
     token = await StaircaseBondingCurve.deployed();
     dai = await ERC20Mintable1.deployed();
   });
 
-  xit("should be correctly configured", async () => {
+  it("should be correctly configured", async () => {
     const stepsRead = await token.getSteps();
 
     assert.equal(stepsRead.length, steps.length, "length");
@@ -62,7 +62,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     // console.log(`beneficiary: ${beneficiary}`);
   });
 
-  xit("should compute the mint cost 01", async () => {
+  it("should compute the mint cost 01", async () => {
     const amount = toWei("1 000");
     const result = await token.mintCost(amount);
 
@@ -70,7 +70,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(result[1].toString(), "0", "step");
   });
 
-  xit("should compute the mint cost 02", async () => {
+  it("should compute the mint cost 02", async () => {
     const amount = toWei("10 000 000");
     const result = await token.mintCost(amount);
 
@@ -78,7 +78,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(result[1].toString(), "0", "step");
   });
 
-  xit("should compute the mint cost 03", async () => {
+  it("should compute the mint cost 03", async () => {
     const amount = toWei("10 000 000").add(toWei("1 000"));
     const result = await token.mintCost(amount);
 
@@ -90,7 +90,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(result[1].toString(), "1", "step");
   });
 
-  xit("should compute the mint cost 04", async () => {
+  it("should compute the mint cost 04", async () => {
     const amount = toWei("20 000 000");
     const result = await token.mintCost(amount);
 
@@ -102,7 +102,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(result[1].toString(), "1", "step");
   });
 
-  xit("should compute the mint cost 05", async () => {
+  it("should compute the mint cost 05", async () => {
     const amount = toWei("20 000 000").add(toWei("1 000"));
     const result = await token.mintCost(amount);
 
@@ -114,7 +114,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(result[1].toString(), "2", "step");
   });
 
-  xit("should compute the mint cost 05", async () => {
+  it("should compute the mint cost 05", async () => {
     const amount = toWei("20 000 000").add(toWei("80 000 000"));
     const result = await token.mintCost(amount);
 
@@ -129,7 +129,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(result[1].toString(), "2", "step");
   });
 
-  xit("should compute the mint cost rounding errors", async () => {
+  it("should compute the mint cost rounding errors", async () => {
     const amount = web3.utils.toBN("1");
     const result = await token.mintCost(amount);
 
@@ -137,7 +137,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(result[1].toString(), "0", "step");
   });
 
-  xit("should redeploy", async () => {
+  it("should redeploy", async () => {
     tokenTemp = await StaircaseBondingCurve.new(
       dai.address,
       steps,
@@ -150,7 +150,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     );
   });
 
-  xit("should be correctly configured", async () => {
+  it("should be correctly configured", async () => {
     const stepsRead = await tokenTemp.getSteps();
 
     assert.equal(stepsRead.length, steps.length, "length");
@@ -172,7 +172,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(beneficiary, execDAO, "beneficiary");
   });
 
-  xit("should not mint if not prepaid", async () => {
+  it("should not mint if not prepaid", async () => {
     const amount = toWei("1 000");
 
     let failed;
@@ -186,7 +186,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.isTrue(failed, "minted");
   });
 
-  xit("should mint 1k", async () => {
+  it("should mint 1k", async () => {
     const amount = toWei("1 000");
     const cost = toWei("10");
 
@@ -226,7 +226,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(step.toString(), "0", "step");
   });
 
-  xit("should mint step1 and 10k of step 2", async () => {
+  it("should mint step1 and 10k of step 2", async () => {
     // mint so that 10k over first step
     const amount = toWei("10 000 000").sub(toWei("1 000")).add(toWei("10 000"));
     const cost = toWei("100 000").sub(toWei("10")).add(toWei("1 000"));
@@ -263,7 +263,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(step.toString(), "1", "step");
   });
 
-  xit("should mint 100k on step2", async () => {
+  it("should mint 100k on step2", async () => {
     // at this point have minted 10k over second step
     // lets mint 100k on this step (price is 0.1)
     const amount = toWei("100 000");
@@ -301,7 +301,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(step.toString(), "1", "step");
   });
 
-  xit("should mint the remaining step 2", async () => {
+  it("should mint the remaining step 2", async () => {
     // at this point have minted 110k over second step
     // lets mint just enough to close the step but not get into the last step
     const amount = toWei("10 000 000").sub(toWei("110 000"));
@@ -339,7 +339,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(step.toString(), "1", "step");
   });
 
-  xit("should mint 0 with no side effects", async () => {
+  it("should mint 0 with no side effects", async () => {
     // at this point supply is at the edge of step 2 and 3
     // lets mint 0 to see it has no effects
 
@@ -375,7 +375,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(step.toString(), "1", "step");
   });
 
-  xit("should mint 1 wei at step 3 price", async () => {
+  it("should mint 1 wei at step 3 price", async () => {
     // at this point supply is at the edge of step 2 and 3
     // lets mint 0 to see it has no effects
 
@@ -414,7 +414,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(step.toString(), "2", "step");
   });
 
-  xit("should redeploy once again", async () => {
+  it("should redeploy once again", async () => {
     tokenTemp2 = await StaircaseBondingCurve.new(
       dai.address,
       steps,
@@ -427,7 +427,7 @@ contract("StaircaseBondingCurve", (accounts) => {
     );
   });
 
-  xit("should mint 25M, covering all steps", async () => {
+  it("should mint 25M, covering all steps", async () => {
     const amount = toWei("25 000 000");
     const cost = toWei("1 100 000").add(toWei("5 000 000"));
 
