@@ -500,13 +500,13 @@ contract("StaircaseBondingCurve", (accounts) => {
     assert.equal(baseToken, ZERO_ADDRESS, "dai");
   });
 
-  xit("should not mint if not value sent", async () => {
+  it("should not mint if not value sent", async () => {
     const amount = toWei("1 000");
 
     let failed;
 
     failed = false;
-    await tokenTemp
+    await tokenTemp4
       .mint(buyer, amount, { from: buyer, value: 0 })
       .catch((error) => {
         assert.equal(error.reason, FUNDS_NOT_ENOUGH, "unexpected reason");
@@ -514,5 +514,50 @@ contract("StaircaseBondingCurve", (accounts) => {
       });
 
     assert.isTrue(failed, "minted");
+  });
+
+  it("should mint 1k paying in native token", async () => {
+    const amount = toWei("1 000");
+    const cost = toWei("10");
+
+    const buyerDai0 = web3.utils.toBN(await web3.eth.getBalance(buyer));
+    const execDAODai0 = web3.utils.toBN(await web3.eth.getBalance(execDAO));
+    const buyerCredits0 = await tokenTemp4.balanceOf(buyer);
+    const supply0 = await tokenTemp4.totalSupply();
+
+    const result = await tokenTemp4.mint(buyer, amount, {
+      from: buyer,
+      value: toWei("10").toString(),
+    });
+
+    const gasUsed = web3.utils.toBN(result.receipt.gasUsed);
+    const gasPrice = web3.utils.toBN(
+      (await web3.eth.getTransaction(result.tx)).gasPrice
+    );
+    const gasCost = gasPrice.mul(gasUsed);
+
+    const buyerDai1 = web3.utils.toBN(await web3.eth.getBalance(buyer));
+    const execDAODai1 = web3.utils.toBN(await web3.eth.getBalance(execDAO));
+    const buyerCredits1 = await tokenTemp4.balanceOf(buyer);
+    const supply1 = await tokenTemp4.totalSupply();
+    const step = await tokenTemp4.step();
+
+    assert.equal(
+      buyerDai1.toString(),
+      buyerDai0.sub(cost).sub(gasCost).toString(),
+      "dai"
+    );
+    assert.equal(
+      execDAODai1.toString(),
+      execDAODai0.add(cost).toString(),
+      "dai"
+    );
+    assert.equal(
+      buyerCredits1.toString(),
+      buyerCredits0.add(amount).toString(),
+      "credits"
+    );
+    assert.equal(supply1.toString(), supply0.add(amount).toString(), "supply");
+    assert.equal(step.toString(), "0", "step");
   });
 });
